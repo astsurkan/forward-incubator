@@ -1,0 +1,4 @@
+select to_char(DT_REAL, 'dd.mm.yyyy') as Date_of_Transfer, count(ID_CONTRACT_FROM) as Quantity from fw_transfers
+where ID_CONTRACT_FROM=ID_CONTRACT_TO
+group by to_char(DT_REAL, 'dd.mm.yyyy') , ID_CONTRACT_FROM
+order by date_of_transfer desc
