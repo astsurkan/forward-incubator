@@ -1,0 +1,2 @@
+SELECT  to_char (DT_TIMESTAMP,'mm') as Month,count(*) as Quantity FROM fw_process_log
+group by to_char (DT_TIMESTAMP,'mm')
