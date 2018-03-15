@@ -1,0 +1,5 @@
+select NumberOfOrder, dt_timestamp from (
+select  substr('Заказ 2520123%',7,7) as NumberOfOrder, dt_timestamp from fw_process_log
+where n_status=500
+order by dt_timestamp desc)
+where rownum=1
