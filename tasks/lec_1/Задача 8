@@ -1,0 +1,4 @@
+select dt_timestamp as Date_of_Login, v_message as Login_Information from fw_process_log
+where id_user=11136
+and rownum=1
+order by dt_timestamp desc
