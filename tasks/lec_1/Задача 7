@@ -1,0 +1,3 @@
+Select count(SID) as Quantity_Repeating_ID from (SELECT SID FROM fw_process_log
+group by SID
+having count(*)>1)
