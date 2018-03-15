@@ -1,0 +1,3 @@
+select ID_CONTRACT_TO as Contract, DT_REAL as Date_of_Transfer from fw_transfers
+where length(V_DESCRIPTION)>22
+order by length(V_DESCRIPTION) desc
