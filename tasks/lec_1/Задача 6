@@ -1,0 +1,4 @@
+select count(substr('Процесс продвижения заказов%', 9,11)) as Quantity_Of_Orders from fw_process_log
+where dt_timestamp>=to_date('2018-03-01 00:00:00','yyyy-mm-dd hh24:mi:ss')
+and dt_timestamp<=to_date('2018-03-31 23:59:59','yyyy-mm-dd hh24:mi:ss')
+group by substr('Процесс продвижения заказов%', 9,11)
