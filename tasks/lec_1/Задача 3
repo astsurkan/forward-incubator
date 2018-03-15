@@ -1,0 +1,3 @@
+select substr(ltrim(v_message), 35, instr(ltrim(v_message)||'Загрузка порции(*)','Загрузка порции(*)')-1) as Number_of_Order 
+from fw_process_log
+where regexp_like (v_message, '^Загрузка порции(*)')
