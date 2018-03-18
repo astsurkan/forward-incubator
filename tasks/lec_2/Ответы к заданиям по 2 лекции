@@ -50,7 +50,20 @@ select v_name from fw_departments, (select count(id_contract_inst) as cnt, id_de
 group by id_contract_inst, id_department)
 where cnt=0
 
-ЗАДАНИЕ 8 (реализовать вывод даты последнего платежа пока не вышло)
+ЗАДАНИЕ 8
+
+select v_ext_ident "Номер лиц.счета", cnt "Количество платежей", dtlast "Последний платеж", user_n "Идентификатор пользователя" from fw_contracts 
+join(
+select distinct idc, cnt, dtlast, user_n from(
+select fc.ID_CONTRACT_INST as idc, count(te.ID_TRANS) as cnt, max(te.dt_event) as dtlast from fw_contracts fc left join trans_external te on fc.ID_CONTRACT_INST=te.ID_CONTRACT
+group by fc.ID_CONTRACT_INST)
+left join(
+select tef.id_manager as user_n, fc1.ID_CONTRACT_INST as idc1, tef.dt_event as dtev from fw_contracts fc1
+full join trans_external tef on fc1.ID_CONTRACT_INST=tef.ID_CONTRACT)
+on idc=idc1 and dtev=dtlast)
+on idc = ID_CONTRACT_INST
+where dt_stop = '2500-01-01'
+
 
 select count(id_trans) as "Количество платежей", id_manager "Идентификатор создателя", v_ext_ident "Номер лицевого счета" from trans_external te
 inner join fw_contracts fc on fc.id_contract_inst=te.id_contract
