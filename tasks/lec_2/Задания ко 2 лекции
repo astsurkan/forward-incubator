@@ -62,8 +62,8 @@ and dt_start<=to_date('2016-01-01', 'yyyy-mm-dd')
 
 
 ЗАДАНИЕ 11
-select id_contract_inst "Номер контракта", cnt "Количество записей со статусом 'Расторгнут'" from fw_contracts, (select count(id_contract_inst) as cnt from fw_contracts
+select id_contract_inst "Номер контракта" from fw_contracts, (select count(id_contract_inst) as cnt from fw_contracts
 group by id_contract_inst)
 where v_status='C'
-and cnt>1
-group by id_contract_inst, cnt
+group by id_contract_inst
+having count(v_status)>1
