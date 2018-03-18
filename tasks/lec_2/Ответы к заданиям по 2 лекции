@@ -29,10 +29,12 @@ group by nvl(v_name, 'null')
 
 ЗАДАНИЕ 5
 
-select v_ext_ident NumOfCount, cnt as Quantity_of_Payments, v_status as StatusOfContract from fw_contracts, (select count(id_contract_inst) as cnt from fw_contracts
-group by id_contract_inst)
-where cnt>3
-and dt_reg_event between '2017-01-01' and '2017-12-31'
+select id_contract_inst "Идентификатор контракта", v_ext_ident "Номер лицевого счета", cnt as "Количество выплат", v_status as "Статус контракта" from (fw_contracts fc
+left join (select id_contract, count(id_trans) as cnt from trans_external
+where dt_event between '2017-01-01' and '2017-12-31'
+group by id_contract) te on fc.id_contract_inst=te.id_contract)
+where dt_stop=to_date('01-01-2500', 'dd-mm-yyyy')
+and cnt>3
 
 ЗАДАНИЕ 6
 
