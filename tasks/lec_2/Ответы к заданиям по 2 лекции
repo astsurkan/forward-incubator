@@ -64,11 +64,6 @@ on idc=idc1 and dtev=dtlast)
 on idc = ID_CONTRACT_INST
 where dt_stop = '2500-01-01'
 
-
-select count(id_trans) as "Количество платежей", id_manager "Идентификатор создателя", v_ext_ident "Номер лицевого счета" from trans_external te
-inner join fw_contracts fc on fc.id_contract_inst=te.id_contract
-group by id_contract, id_manager, v_ext_ident
-
 ЗАДАНИЕ 9
 
 select v_ext_ident as "Номер лиц.счета" from fw_contracts fc
