@@ -1,0 +1,69 @@
+ЗАДАНИЕ 1
+
+select v_ext_ident as NumOfCount, DateOfPayment, Summa from fw_contracts, (
+select f_sum as Summa, dt_event as DateOfPayment from trans_external
+order by dt_event desc)
+where v_ext_ident='0102100000088207_MG1'
+and rownum=1
+
+ЗАДАНИЕ 2
+
+select v_ext_ident as NumOfCount, nvl(v_name,'null') as Dep_name, dt_reg_event as Date_of_Reg from fw_contracts fc
+inner join fw_departments fd on
+fd.id_department=fc.id_department
+where v_status='A'
+
+ЗАДАНИЕ 3
+
+select v_name from fw_departments, (select count(id_contract_inst) as cnt, id_department from fw_contracts
+group by id_contract_inst, id_department)
+where cnt<2
+
+ЗАДАНИЕ 4
+
+
+
+ЗАДАНИЕ 5
+
+select v_ext_ident NumOfCount, cnt as Quantity_of_Payments, v_status as StatusOfContract from fw_contracts, (select count(id_contract_inst) as cnt from fw_contracts
+group by id_contract_inst)
+where cnt>3
+and dt_reg_event between '2017-01-01' and '2017-12-31'
+
+ЗАДАНИЕ 6
+
+select distinct v_ext_ident as NumOfCount, v_status as StatusOfContract, NameOfDep from fw_contracts fc, (select count(id_contract_inst) as cnt, nvl(v_name, 'null') as NameOfDep from fw_contracts
+inner join fw_departments fd on fd.id_department=fw_contracts.id_department
+group by id_contract_inst, nvl(v_name, 'null'))
+where cnt>=1
+and dt_reg_event between '2017-01-01' and '2017-12-31'
+
+ЗАДАНИЕ 7
+
+select v_name from fw_departments, (select count(id_contract_inst) as cnt, id_department from fw_contracts
+group by id_contract_inst, id_department)
+where cnt=0
+
+ЗАДАНИЕ 8 (реализовать вывод даты последнего платежа пока не вышло)
+
+select count(id_trans) as "Количество платежей", id_manager "Идентификатор создателя", v_ext_ident "Номер лицевого счета" from trans_external te
+inner join fw_contracts fc on fc.id_contract_inst=te.id_contract
+group by id_contract, id_manager, v_ext_ident
+
+ЗАДАНИЕ 9
+
+select v_ext_ident as "Номер лиц.счета" from fw_contracts fc
+inner join trans_external te on te.id_contract=fc.id_contract_inst
+where id_trans=6397542
+and dt_start<=to_date('2016-01-01', 'yyyy-mm-dd')
+
+ЗАДАНИЕ 10
+
+
+
+ЗАДАНИЕ 11
+select id_contract_inst "Номер контракта", cnt "Количество записей со статусом 'Расторгнут'" from fw_contracts, (select count(id_contract_inst) as cnt from fw_contracts
+group by id_contract_inst)
+where v_status='C'
+and cnt>1
+group by id_contract_inst, cnt
