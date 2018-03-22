@@ -1,0 +1,21 @@
+with prep_sap as(
+select fc.v_ext_ident as v_contract,
+fc.id_contract_inst,
+sum(n_cost_period) as f_sum_ap
+from fw_contracts fc
+join fw_services fs
+on fs.id_contract_inst=fc.id_contract_inst
+and fs.b_deleted=0
+and fs.dt_start<=localtimestamp
+and fs.dt_stop>=localtimestamp
+join fw_services_cost fcs
+on fcs.id_service_inst=fs.id_service_inst
+and fcs.id_contract_inst=fc.id_contract_inst
+and fcs.dt_start<= localtimestamp
+and fcs.dt_stop> localtimestamp
+where fc.dt_start<= localtimestamp
+and fc.dt_stop>localtimestamp
+group by fc.id_contract_inst, fc.v_ext_ident)
+
+select t.* from prep_sap t
+where t.f_sum_ap>= (select avg(a.f_sum_ap) from prep_sap a)
