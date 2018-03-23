@@ -1,0 +1,20 @@
+select n_dep "Название филиала", fs.v_name "Название услуги", servsum "Сумма" from (
+select * from (
+select n_cost_period, fsc.id_service_inst, id_contract_inst from fw_services_cost fsc
+where dt_start<=localtimestamp
+and dt_stop>=localtimestamp
+order by n_cost_period desc)
+where rownum<=5) servcnt 
+left join fw_contracts fc on servcnt.id_contract_inst=fc.id_contract_inst 
+left join fw_departments fd on fc.id_department=fd.id_department
+left join fw_services fss on servcnt.id_service_inst=fss.id_service_inst 
+left join fw_service fs on fss.id_service=fs.id_service
+left join (
+select sum(n_cost_period) as servsum, fs.id_service as ids, fd.v_name as n_dep from fw_contracts fc 
+left join fw_departments fd on fc.id_department=fd.id_department
+left join fw_services_cost fsc on fc.id_contract_inst=fsc.id_contract_inst
+left join fw_services fss on fsc.id_service_inst=fss.id_service_inst 
+left join fw_service fs on fss.id_service=fs.id_service
+group by fd.v_name, fs.id_service
+order by servsum desc) sq1
+on fss.id_service=ids and fd.v_name = n_dep
