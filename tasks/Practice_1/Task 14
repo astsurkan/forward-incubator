@@ -1,0 +1,11 @@
+/*Следующий пример делит строки на четыре группы филиалов по их показателям сумм АП 
+за период (sum(n_cost_period) из таблицы fw_services_costs)*/
+
+select fd.v_name "Название филиала",
+ntile(4) over(order by sum(fsc.n_cost_period) desc) "Group"
+from fw_contracts fc
+join fw_services_cost fsc
+on fc.id_contract_inst=fsc.id_contract_inst
+join fw_departments fd
+on fc.id_department=fd.id_department
+group by fd.v_name
