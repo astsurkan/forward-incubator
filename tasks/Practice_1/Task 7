@@ -1,0 +1,20 @@
+select fd.v_name as "Название филиала", frst "Самая популярная услуга", lst "Самая непопулярная услуга"
+from (
+select distinct id_dep, first_value(sc_name) over (partition by id_dep) frst, 
+last_value(sc_name) over (partition by id_dep) lst
+from (
+select id_dep, sc_name,
+dense_rank() over (
+partition by id_dep
+order by sc_name desc) frst
+from (
+select count(nvl(fse.v_name, '0')) cnt, fc.id_department id_dep, fse.v_name as sc_name from fw_contracts fc
+join fw_services fs
+on fc.id_contract_inst=fs.id_contract_inst
+join fw_service fse
+on fs.id_service=fse.id_service
+group by fc.id_department, fse.v_name
+order by cnt desc, id_dep)
+order by id_dep, frst))
+join fw_departments fd
+on id_dep=fd.id_department
