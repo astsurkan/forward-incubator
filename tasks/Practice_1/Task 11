@@ -1,0 +1,32 @@
+with sq1 as
+(select fd.v_name as d_name, ftp1.v_name as t_name, sum(fsc.n_cost_period) as summ, 
+dense_rank() over (
+partition by fd.v_name 
+order by sum(fsc.n_cost_period) desc) as rang from fw_tariff_plan ftp1
+join fw_services fs
+on ftp1.id_tariff_plan=fs.id_tariff_plan
+join fw_services_cost fsc
+on fs.id_service_inst=fsc.id_service_inst
+join fw_contracts fc
+on fsc.id_contract_inst=fc.id_contract_inst
+join fw_departments fd 
+on fc.id_department=fd.id_department
+join fw_service fse
+on fse.id_service= fs.id_service
+where ftp1.b_deleted=0
+and fse.b_deleted=0
+and fs.b_deleted=0
+and fd.b_deleted=0
+and fs.dt_start<=localtimestamp
+and localtimestamp<fs.dt_stop
+and fsc.dt_start<=localtimestamp
+and localtimestamp<fsc.dt_stop
+and fc.dt_start<=localtimestamp
+and localtimestamp<fc.dt_stop
+and fse.b_add_service=1
+group by fd.v_name, ftp1.v_name
+order by fd.v_name, sum(fsc.n_cost_period) desc)
+
+select d_name "Название филиала", t_name "Название тарифа", summ "Стоимость" from sq1
+where rang = 1
+order by summ desc
