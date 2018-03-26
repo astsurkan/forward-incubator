@@ -1,4 +1,4 @@
-Используя LAST_VALUE, вывести название филиала, в котором меньше всего контрактов
+Используя FIRST_VALUE, вывести название филиала, в котором меньше всего контрактов
 
 with sq2 as (
 select distinct fc.id_department, fd.v_name, count(fc.id_contract_inst) cnt,
