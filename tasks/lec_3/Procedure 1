@@ -1,0 +1,20 @@
+CREATE OR REPLACE PROCEDURE proc1 ( dtstrt in date, dtend in date, cur OUT sys_refcursor )
+is
+BEGIN
+open cur for
+with subq1 as (
+select fc.V_EXT_IDENT as "acn", fd.v_name as "dpn", sum(te.f_sum) as "amnt" ,jn1."alp", te.id_contract
+from trans_external te
+join (select F_SUM as "alp",id_contract as ID, max(DT_EVENT)
+from trans_external
+where trunc(dt_event) between dtstrt and dtend
+group by F_SUM,ID_CONTRACT,DT_EVENT
+) jn1 on te.id_contract=jn1.id
+join fw_contracts fc on te.id_contract=fc.id_contract_inst
+join FW_DEPARTMENTS fd on fc.ID_DEPARTMENT=fd.ID_DEPARTMENT
+where trunc(te.dt_event) between dtstrt and dtend
+group by fc.V_EXT_IDENT, fd.v_name,jn1."alp",te.id_contract)
+select "acn" "Номер лицевого счета","dpn" "Название филиала", "alp" "Сумма последнего платежа", "amnt" "Общая сумма"
+from subq1
+order by "amnt" desc;
+END;
