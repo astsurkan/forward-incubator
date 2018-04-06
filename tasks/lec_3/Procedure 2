@@ -1,0 +1,15 @@
+create or replace procedure procup1(
+open_range in varchar2,
+close_range  in varchar2,
+id_init in int,
+id_new  in int
+) is
+begin
+update fw_identifiers
+set fw_identifiers.id_service_identifier = (select fw_service_identifier.id_service_identifier from fw_service_identifier
+where fw_service_identifier.v_name = id_new)
+where open_range <= fw_identifiers.v_value 
+and fw_identifiers.v_value <= close_range
+and fw_identifiers.id_service_identifier = (select fw_service_identifier.id_service_identifier from fw_service_identifier 
+where fw_service_identifier.v_name = id_init);
+end;
